@@ -1,0 +1,6 @@
+{
+  "require": {
+    "parse/php-sdk" : "1.0.*",
+    "allinora/simple-framework" : "dev-master"
+  }
+}

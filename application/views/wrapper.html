@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="<{$lang}>" xml:lang="<{$lang}>">
+<head>
+<title><{$meta_title}></title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+
+<!-- Latest compiled and minified CSS  for bootstrap -->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+<!-- Bootstrap Optional theme -->
+<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+<!-- jquery ui css -->
+<link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" />
+
+
+
+
+
+<!-- Local css -->
+<link rel="stylesheet" href="/js/bower_components/plupload/js/jquery.ui.plupload/css/jquery.ui.plupload.css" type="text/css" />
+<link rel="stylesheet" href="/css/dashboard.css">
+
+
+<{if $currentAlbum}>
+<script>
+	window.currentAlbum = '<{$currentAlbum}>';
+</script>
+<{/if}>
+
+		
+	
+
+</head>
+<body>
+	<nav class="navbar navbar-default" role="navigation">
+	  <div class="container-fluid">
+	    <!-- Brand and toggle get grouped for better mobile display -->
+	    <div class="navbar-header">
+	      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	        <span class="sr-only">Toggle navigation</span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	        <span class="icon-bar"></span>
+	      </button>
+	      <a class="navbar-brand" href="#">Parse CMS</a>
+	    </div>
+
+	    <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <ul class="nav navbar-nav">
+			<{foreach from=$aNav item=nav}>
+				<{if $nav.kids|count}>
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><{$nav.name}><span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+					<{foreach from=$nav.kids item=kid}>
+		            	<li><a href="/pages/<{$kid.url}>"><{$kid.name}></a></li>
+					<{/foreach}>
+		          </ul>
+		        </li>
+				<{else}>
+		        <li class="activexx"><a href="/pages/<{$nav.url}>"><{$nav.name}></a></li>
+				<{/if}>
+			<{/foreach}>
+		
+
+
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+	  </div><!-- /.container-fluid -->
+	</nav>
+
+<!-- content -->
+
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-12	 main">
+			<{$content}>
+		</div>
+	</div>
+</div>
+
+
+
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<!-- Local js -->
+<script src="/js/bower_components/plupload/js/plupload.full.min.js"></script>
+<script src="/js/bower_components/plupload/js/jquery.ui.plupload/jquery.ui.plupload.min.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

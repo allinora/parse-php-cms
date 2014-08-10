@@ -1,0 +1,45 @@
+<form action="/admin/addnav">
+	
+<table class="table table-striped table-bordered table-condensed">
+	<thead>
+	</thead>
+	<tbody>
+		<tr>
+			<th>Parent</th>
+			<td>
+				<select name="navparent">
+					<option value="">None</option>
+					<{foreach from=$aNav item=nav}>
+					<option value="<{$nav->getObjectID()}>"><{$nav->name}></option>
+					<{/foreach}>
+					
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>Name</th>
+			<td>
+				<input type="text" name="name" style="width: 100%">
+			</td>
+		</tr>
+		<tr>
+			<th>Page</th>
+			<td>
+				<select name="page">
+					<{foreach from=$aPages item=page}>
+					<option value="<{$page->slug}>"><{$page->slug}></option>
+					<{/foreach}>
+					
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<th>&nbsp;</th>
+			<td>
+				<input type="submit">
+			</td>
+		</tr>
+		
+	</tbody>
+</table>
+		

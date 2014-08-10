@@ -1,0 +1,6 @@
+<{if $login eq "success"}>
+Successfully logged in. Now redirecting ...
+<script>
+	self.location="/<{$lang}>/<{$next_controller}>/<{$next_action}>";
+</script>
+<{/if}>
