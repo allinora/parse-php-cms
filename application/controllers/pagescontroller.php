@@ -16,6 +16,7 @@ class PagesController extends BaseController {
 	}
 
 	function showAction($name){
+	
 		$aNav = $this->backend->getNavigationTree();
 		$this->set('aNav', $aNav);
 		
