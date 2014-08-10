@@ -1,7 +1,7 @@
-Parse PHP Albums
+Parse PHP CMS
 =============
 
-Example app to test and demostrate the PHP-SDK for parse.com backend
+Example app to test and demonstrate the PHP-SDK for parse.com backend
 
 Authors
 -------
@@ -26,7 +26,6 @@ The app should touch the following features.
 0. Login
 0. Session
 0. Caching
-0. Parse Files ( to store images )
 0. Parse Objects ( to create buckets, albums, etc)
 0. Object relations (pictures belong to albums, albums belong to users, comments belong to users and pictures, etc)
 0. Eventually Roles to have albums shared with multiple users
@@ -36,14 +35,14 @@ Installation
 ------------
 Clone from git into a directory called parse-php-albums
 
-	git clone https://github.com/allinora/parse-php-albums.git
+	git clone https://github.com/allinora/parse-php-cms.git
 	
 Install the dependencies
 
-	cd parse-php-albums
+	cd parse-php-cms
 	make install
 
-Edit the parse-php-albums/config/config.php and replace values in  the PARSE constants
+Edit the parse-php-cms/config/config.php and replace values in  the PARSE constants
 
 Run the application
 	
@@ -53,11 +52,11 @@ Browse on localhost:8080
 
 Developers
 -----------
-Almost all the Parse-SDK  functions are in library/ParseApp/Albums.php https://github.com/allinora/parse-php-albums/blob/master/library/ParseApp/Albums.php
+Almost all the Parse-SDK  functions are in library/ParseApp/Albums.php https://github.com/allinora/parse-php-albums/blob/master/library/ParseApp/Cms.php
 
 Bug reporting
 -------------
-Please report in the issue tracker at https://github.com/allinora/parse-php-albums/issues
+Please report in the issue tracker at https://github.com/allinora/parse-php-cms/issues
 
 
 License
