@@ -46,19 +46,16 @@ class Cms {
 		ParseUser::logOut();
 	}
 	
-	public function createFolder($name){
-		if ($this->folderExists($name)){
-			throw new \Exception("A folder with this name already exists. Please choose another");
-		}
+	public function getPageByName($name){
+		$query = new ParseQuery('Pages');
+		$query->equalTo('name', $name);
 		
-		$user = ParseUser::getCurrentUser();
-		// Make a new folder
-		$folder = new ParseObject("Folders");
-		$folder->set("name", $name);
-		$folder->set("user", $user);
-		$folder->save();
-		unset($_SESSION['folders']);
-		return $folder;
+		$object = $query->first();
+		if (is_object($object)){
+			return $object;
+		}
+		die("Could not find a page with this address");
+		return false;
 	}
 
 	public function getPages(){
@@ -69,30 +66,41 @@ class Cms {
 			$_SESSION['pages'][$page->getObjectId()] = $page;
 		}
 		return $aPages;
+	}
+	
+	public function getPage($id){
+		return $_SESSION['pages'][$id];
+	}
+	
+	public function savePage($params){
+		if (empty($params['id'])){
+			throw new Exception("id is required");
+		}
+		$oPage = $this->getPage($params['id']);
+		$oPage->set("data", $params['data']);
+		$oPage->save();
+		unset ($_SESSION['pages'][$params['id']]);
+		return;
 		
 	}
 	
 	
 	function addPage($params){
-		if (empty($params['slug'])){
-			throw new Exception("slug is required");
+		if (empty($params['name'])){
+			throw new Exception("name is required");
 		}
 		if (empty($params['type'])){
 			throw new Exception("type is required");
 		}
-
-		$slugger = new Slugify();
-		$slug = $slugger->slugify($params['slug']);
-
-		if ($this->pageExists($slug)){
-			throw new Exception("A page with this slug already exists");
+		if ($this->pageExists($params['name'])){
+			throw new Exception("A page with this name already exists");
 		}
 		
 		
 		
 		
 		$oPage = new ParseObject("Pages");
-		$oPage->set("slug", $slug);
+		$oPage->set("name", $params['name']);
 		$oPage->set("type", $params['type']);
 		$oPage->save();
 		return $oPage;
@@ -102,25 +110,50 @@ class Cms {
 		if (empty($params['name'])){
 			throw new Exception("name is required");
 		}
-		if (empty($params['page'])){
-			throw new Exception("page is required");
-		}
-
 		
 		$oNav = new ParseObject("Navigation");
 		$oNav->set("name", $params['name']);
-		$oNav->set("page", $params['page']);
 
-		if (!empty($params['navparent'])){
-			$oNav->set("navparent", $params['navparent']);
+		if (!empty($params['parent_id'])){
+			$oNav->set("parent_id", $params['parent_id']);
+		}
+		if (!empty($params['page'])){
+			$oNav->set("page", $params['page']);
 		}
 		
 		$oNav->save();
 		return $oNav;
 	}
 	
+	function getOneLevel($parent_id=null){
+		$query = new ParseQuery("Navigation");
+		$query->equalTo('parent_id', $parent_id);
+		$aNav = $query->find();
+		return $aNav;
+	}
+	
+	function getChildren($id, &$aChildren){
+		$aNodes = $this->getOneLevel($id);
+		foreach ($aNodes as $node){
+			$aChildren[$node->getObjectId()]['object_id'] = $node->getObjectId();
+			$aChildren[$node->getObjectId()]['name'] = $node->get("name");
+			$aChildren[$node->getObjectId()]['page'] = $node->get("page");
+			$aChildren[$node->getObjectId()]['parent_id'] = $node->get("parent_id");
+			$aGrandChildren = array();
+			$this->getChildren($node->getObjectId(), $aGrandChildren);
+			$aChildren[$node->getObjectId()]['children'] = $aGrandChildren;
+		}
+	}
+	
+	
+	function getNav($id){
+		return $_SESSION['nav'][$id];
+	}
 	
 	function getNavs(){
+		if (isset($_SESSION['nav'])){
+			return $_SESSION['nav'];
+		}
 		$query = new ParseQuery("Navigation");
 		$aNav = $query->find();
 		$_SESSION['nav'] = array();
@@ -130,49 +163,120 @@ class Cms {
 		return $aNav;
 	}
 	
+	
+	
 	function getNavigationTree(){
 		
 		if (isset($_SESSION['navigation'])){
 			return $_SESSION['navigation'];
 		}
+		$this->getNavs();
 		$aTree = array();
-		
-		$aNavigation = $this->getNavs();
-		//print "<pre>" . print_r($aNavigation, true) . "</pre>";
-		
-		foreach ($aNavigation as &$nav){
-			if (!empty($nav->get('navparent'))){
-				continue;
-			}
-			$this->getNavKids($nav);
-			$aTree[$nav->getObjectID()]['name'] = $nav->get('name');
-			$aTree[$nav->getObjectID()]['url'] = $nav->get('page');
-			$aKids = unserialize($nav->children);
-			if (!empty($aKids)){
-				foreach($aKids as $kid){
-					$aTree[$nav->getObjectID()]['kids'][$kid->getObjectId()]['name'] = $kid->get('name');
-					$aTree[$nav->getObjectID()]['kids'][$kid->getObjectId()]['url'] = $kid->get('page');
-				}
-			}
-			
-			
+
+		$topLevel = $this->getOneLevel();
+		foreach ($topLevel as $node){
+			$aTree[$node->getObjectId()]['object_id'] = $node->getObjectId();
+			$aTree[$node->getObjectId()]['name'] = $node->get("name");
+			$aTree[$node->getObjectId()]['page'] = $node->get("page");
+			$aTree[$node->getObjectId()]['parent_id'] = $node->get("parent_id");
+
+			$aChildren = array();
+			$this->getChildren($node->getObjectId(), $aChildren);
+
+			$aTree[$node->getObjectId()]['children'] = $aChildren;
 		}
+		
 		//print "<pre>aTree" . print_r($aTree, true) . "</pre>";exit;	
 		$_SESSION['navigation'] = $aTree;
 		return $aTree;
 	}
 	
-	function getNavKids(&$nav){
-		$query = new ParseQuery("Navigation");
-		$query->equalTo('navparent', $nav->getObjectID());
-		$aKids = $query->find();
-		$nav->children = serialize($aKids);
+	function findChildren($id, &$aTree){
+		foreach($aTree as $object_id => $aNodes){
+			if ($object_id == $id){
+				return $aNodes['children'];
+			}
+			return $this->findChildren($id, $aNodes['children']);
+		}
+	}
+
+
+
+	function getBreadCrumbs($id, &$aBreadCrumbs){
+		$oNav = $this->getNav($id);
+		$aBreadCrumbs[] = $oNav->get("name");
+		if (!empty($oNav->get("parent_id"))){
+			$this->getBreadCrumbs($oNav->get("parent_id"), $aBreadCrumbs);
+		}
+		return $aBreadCrumbs;
+	}
+
+
+
+	function getBreadCrumbsx($id, &$aTree, &$aBreadCrumbs){
+		foreach($aTree as $object_id => $aNodes){
+			$aBreadCrumbs[] = $aNodes['name'];
+			print "Setting: " . $aNodes['name'] . "<br>";
+			if ($object_id == $id){
+				return $aBreadCrumbs;
+			}
+			return $this->getBreadCrumbs($id, $aNodes['children'], $aBreadCrumbs);
+		}
 	}
 	
-	private function pageExists($slug){
+	
+
+	function getNavSelector($selected_id = null){
+		$navSelector = $this->getSelectList($this->getNavigationTree(), 'parent_id', array('selected_id' => $selected_id));
+		return $navSelector; 
+	}
+
+
+
+	private function getSelectList($aTree, $name = 'selectFiler', $aParams = array()){
+		$str = "";
+	
+		$str .= "<select id='$name' name='$name'>\n";
+		$str .= $this->getSelectOptions($aTree, 0, $aParams);
+
+		$str .= "</select>\n";
+		
+		return $str;
+
+
+	}
+
+
+	private function getSelectOptions($aTree, $level = 0, $aParams = array()){
+		$str = "";
+		$selected_id = isset($aParams['selected_id']) ? $aParams['selected_id'] : null;
+		
+		
+		
+		foreach($aTree as $folder){
+			$name = str_repeat (  '&nbsp;&nbsp;&nbsp;' ,  $level )  . '- ' . $folder['name'];
+			$str .=  "<option ";
+			$str .= " value='" . $folder['object_id'] . "'";
+			if ($selected_id == $folder['object_id']) {
+				$str .= " selected ";
+			}
+			$str .= ">" .  $name . "</option>\n";
+			if (is_array($folder['children'])){
+				$str .= $this->getSelectOptions($folder['children'], $level+1, $aParams)	;
+			}
+
+			
+		}
+		return $str;
+
+
+
+	}
+	
+	private function pageExists($name){
 
 		$query = new ParseQuery('Pages');
-		$query->equalTo('slug', $slue);
+		$query->equalTo('name', $name);
 		
 		$object = $query->first();
 		if (is_object($object)){

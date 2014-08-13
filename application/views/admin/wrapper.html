@@ -13,6 +13,14 @@
 
 <!-- jquery ui css -->
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" />
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jquery-te/1.4.0/jquery-te.min.css" type="text/css" />
+
+<!-- fancytree css -->
+<link rel='stylesheet' type='text/css' media='screen' href='https://static.worldsoft-cms.info/js/jquery/plugins/fancytree/2.1.0/dist/skin-lion/ui.fancytree.css' />
+
+
+
+
 
 
 
@@ -47,7 +55,7 @@
 	        </div>
 	        <div class="navbar-collapse collapse">
 	          <ul class="nav navbar-nav navbar-right">
-	            <li><a href="#">Dashboard</a></li>
+	            <li><a href="/">Home</a></li>
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><{$smarty.session.username}> <span class="caret"></span></a>
 					<ul class="dropdown-menu" role="menu">
@@ -65,11 +73,10 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-2">
-			<ul class="nav nav-sidebar">
-				<li><a href="/admin/pages">Pages</a></li>
-				<li><a href="/admin/navigation">Navigation</a></li>
-			</ul>
+	      <div id="tree"></div>
 		</div>
+	
+		
 		<div class="col-md-10 main">
 			
 			<{$content}>
@@ -83,10 +90,20 @@
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-te/1.4.0/jquery-te.min.js"></script>
+<script type='text/javascript' src='https://static.worldsoft-cms.info/js/jquery/plugins/fancytree/2.1.0/dist/jquery.fancytree.min.js'  ></script>
+<script type='text/javascript' src='https://static.worldsoft-cms.info/js/jquery/plugins/fancytree/2.1.0/dist/src/jquery.fancytree.dnd.js'  ></script>
+<script type='text/javascript' src='https://static.worldsoft-cms.info/js/jquery/plugins/fancytree/2.1.0/dist/src/jquery.fancytree.persist.js'  ></script>
+
+
+
 <!-- Latest compiled and minified JavaScript -->
 <!-- Local js -->
-<script src="/js/bower_components/plupload/js/plupload.full.min.js"></script>
-<script src="/js/bower_components/plupload/js/jquery.ui.plupload/jquery.ui.plupload.min.js"></script>
 <script src="/js/app.js"></script>
 </body>
 </html>

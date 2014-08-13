@@ -9,10 +9,9 @@
 			<td>
 				<select name="navparent">
 					<option value="">None</option>
-					<{foreach from=$aNav item=nav}>
-					<option value="<{$nav->getObjectID()}>"><{$nav->name}></option>
+					<{foreach from=$smarty.session.nav item=nav}>
+					<option value="<{$nav->getObjectId()}>"><{$nav->get("name")}></option>
 					<{/foreach}>
-					
 				</select>
 			</td>
 		</tr>
@@ -26,8 +25,8 @@
 			<th>Page</th>
 			<td>
 				<select name="page">
-					<{foreach from=$aPages item=page}>
-					<option value="<{$page->slug}>"><{$page->slug}></option>
+					<{foreach from=$smarty.session.pages item=page}>
+					<option value="<{$page->getObjectId()}>"><{$page->get("slug")}></option>
 					<{/foreach}>
 					
 				</select>

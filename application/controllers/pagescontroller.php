@@ -20,6 +20,8 @@ class PagesController extends BaseController {
 		$aNav = $this->backend->getNavigationTree();
 		$this->set('aNav', $aNav);
 		
+		$oPage = $this->backend->getPageBySlug($name);
+		$this->set('oPage', $oPage);
 		
 	}
 }

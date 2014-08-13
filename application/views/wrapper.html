@@ -56,7 +56,7 @@
 		          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><{$nav.name}><span class="caret"></span></a>
 		          <ul class="dropdown-menu" role="menu">
 					<{foreach from=$nav.kids item=kid}>
-		            	<li><a href="/pages/<{$kid.url}>"><{$kid.name}></a></li>
+		            	<li><a href="/pages/show/<{$kid.url}>"><{$kid.name}></a></li>
 					<{/foreach}>
 		          </ul>
 		        </li>
@@ -64,10 +64,23 @@
 		        <li class="activexx"><a href="/pages/show/<{$nav.url}>"><{$nav.name}></a></li>
 				<{/if}>
 			<{/foreach}>
-		
-
-
 	      </ul>
+	    <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+			<{if $smarty.session.username}>
+	            <li><a href="/admin/">Admin</a></li>
+				<li class="dropdown">
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><{$smarty.session.username}> <span class="caret"></span></a>
+					<ul class="dropdown-menu" role="menu">
+						<li><a href="/access/logout">Logout</a></li>
+					</ul>
+				</li>
+			<{else}>
+            	<li><a href="/access/login">Login</a></li>
+			<{/if}>
+          </ul>
+        </div>
+
 	    </div><!-- /.navbar-collapse -->
 	  </div><!-- /.container-fluid -->
 	</nav>
@@ -89,8 +102,6 @@
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
 <!-- Local js -->
-<script src="/js/bower_components/plupload/js/plupload.full.min.js"></script>
-<script src="/js/bower_components/plupload/js/jquery.ui.plupload/jquery.ui.plupload.min.js"></script>
 <script src="/js/app.js"></script>
 </body>
 </html>
