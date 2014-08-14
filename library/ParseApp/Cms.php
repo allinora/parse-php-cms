@@ -130,6 +130,9 @@ class Cms {
 	
 	function getOneLevel($parent_id=null){
 		$query = new ParseQuery("Navigation");
+		if (empty($parent_id)){
+			$parent_id = null;
+		}
 		$query->equalTo('parent_id', $parent_id);
 		$aNav = $query->find();
 		return $aNav;
@@ -172,15 +175,16 @@ class Cms {
 	
 	
 	function getNavigationTree(){
-		
-		if (isset($_SESSION['navigation'])){
+		if (!empty($_SESSION['navigation'])){
 			return $_SESSION['navigation'];
 		}
+		// print "<pre>" . print_r($_SESSION, true)  . "</pre>";
 		$this->getNavs();
 		$aTree = array();
 
 		$topLevel = $this->getOneLevel();
 		foreach ($topLevel as $node){
+			//print "<pre>node" . print_r($node, true) . "</pre>";
 			$aTree[$node->getObjectId()]['object_id'] = $node->getObjectId();
 			$aTree[$node->getObjectId()]['name'] = $node->get("name");
 			$aTree[$node->getObjectId()]['page'] = $node->get("page");
@@ -235,73 +239,6 @@ class Cms {
 	
 
 
-	function getNavMenu($selected_id = null){
-		$getNavMenu = $this->getHTMLList($this->getNavigationTree(), 'parent_id', array('selected_id' => $selected_id));
-		return $getNavMenu; 
-	}
-
-
-	function getHTMLList($aTree, $name = 'selectFiler', $aParams = array()){
-		/*
-		<ul class="nav navbar-nav">
-			<{foreach from=$aNav item=nav}>
-				<{if $nav.children|count}>
-		        <li class="dropdown">
-		          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><{$nav.name}><span class="caret"></span></a>
-		          <ul class="dropdown-menu" role="menu">
-					<{foreach from=$nav.children item=kid}>
-		            	<li><a href="/pages/show/<{$kid.url}>"><{$kid.name}></a></li>
-					<{/foreach}>
-		          </ul>
-		        </li>
-				<{else}>
-		        <li class="activexx"><a href="/pages/show/<{$nav.url}>"><{$nav.name}></a></li>
-				<{/if}>
-			<{/foreach}>
-	    </ul>
-		*/
-		
-		
-		
-		$xstr = "";
-		$xstr .= "<ul id='$name' class='nav navbar-nav'>\n";
-		$xstr .= $this->getHTMLListElements($aTree, 0, $aParams);
-		$xstr .= "</ul>\n";
-		
-		return $xstr;
-
-
-	}
-	
-	function getHTMLListElements($aTree, $level = 0, $aParams = array()){
-		ini_set("display_errors", "On");
-		$str = "";
-		
-		
-		$tabs = str_repeat("\t", $level+1);
-		foreach($aTree as $folder){
-			
-			if (is_array($folder['children']) && count($folder['children']) > 0){
-				$str .= "$tabs<li class='dropdown'>\n";
-				$str .= "$tabs<a href='#' class='dropdown-toggle' data-toggle='dropdown'>{$folder['name']}<span class='caret'></span></a>\n";
-				$str .= "$tabs" . '<ul class="dropdown-menu" role="menu">' . "\n";
-				$str .= $this->getHTMLListElements($folder['children'], $level+1, $aParams)	;
-				$str .= "$tabs</ul></li>\n";
-			} else {
-				$str .= "$tabs\t<li id='d_{$folder['object_id']}'>{$folder['name']}\n";
-			}
-
-			//$str .= "</li>\n";
-			
-			
-		}
-		return $str;
-
-
-
-	}
-	
-	
 
 	function getNavSelector($selected_id = null){
 		$navSelector = $this->getSelectList($this->getNavigationTree(), 'parent_id', array('selected_id' => $selected_id));
@@ -314,7 +251,7 @@ class Cms {
 		$str = "";
 	
 		$str .= "<select id='$name' name='$name'>\n";
-		$str .= "<option>None</option>\n";
+		$str .= "<option value=''>None</option>\n";
 		$str .= $this->getSelectOptions($aTree, 0, $aParams);
 
 		$str .= "</select>\n";
