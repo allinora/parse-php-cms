@@ -15,6 +15,8 @@
 <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css" type="text/css" />
 
 
+<!-- fancytree css -->
+<link rel='stylesheet' type='text/css' media='screen' href='https://static.worldsoft-cms.info/js/jquery/plugins/fancytree/2.1.0/dist/skin-lion/ui.fancytree.css' />
 
 
 
@@ -48,23 +50,6 @@
 	    </div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
-	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-	      <ul class="nav navbar-nav">
-			<{foreach from=$aNav item=nav}>
-				<{if $nav.kids|count}>
-		        <li class="dropdown">
-		          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><{$nav.name}><span class="caret"></span></a>
-		          <ul class="dropdown-menu" role="menu">
-					<{foreach from=$nav.kids item=kid}>
-		            	<li><a href="/pages/show/<{$kid.url}>"><{$kid.name}></a></li>
-					<{/foreach}>
-		          </ul>
-		        </li>
-				<{else}>
-		        <li class="activexx"><a href="/pages/show/<{$nav.url}>"><{$nav.name}></a></li>
-				<{/if}>
-			<{/foreach}>
-	      </ul>
 	    <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
 			<{if $smarty.session.username}>
@@ -89,11 +74,19 @@
 
 <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12	 main">
+		<div class="col-md-2">
+	      <div id="sitemenu"></div>
+		</div>
+	
+		
+		<div class="col-md-10 main">
+			
 			<{$content}>
+			
 		</div>
 	</div>
 </div>
+
 
 
 
@@ -101,6 +94,20 @@
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
 <!-- Latest compiled and minified JavaScript -->
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+
+
+
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-te/1.4.0/jquery-te.min.js"></script>
+
+
+
+<script type='text/javascript' src='https://static.worldsoft-cms.info/js/jquery/plugins/fancytree/2.1.0/dist/jquery.fancytree.min.js'  ></script>
+<script type='text/javascript' src='https://static.worldsoft-cms.info/js/jquery/plugins/fancytree/2.1.0/dist/src/jquery.fancytree.persist.js'  ></script>
+
+
+
 <!-- Local js -->
 <script src="/js/app.js"></script>
 </body>

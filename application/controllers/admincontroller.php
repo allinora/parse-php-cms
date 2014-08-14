@@ -12,8 +12,8 @@ class AdminController extends BaseController {
 		$this->aNav = $this->backend->getNavigationTree();
 		$this->set('aNav', $this->aNav);
 
-		$aPages = $this->backend->getPages();
-		$this->set('aPages', $aPages);
+		$this->aPages = $this->backend->getPages();
+		$this->set('aPages', $this->aPages);
 	}
 
 	
@@ -44,27 +44,29 @@ class AdminController extends BaseController {
 	}
 
 	function navigationAction(){
+		$this->render = 0;
 		print "<pre>" . print_r($aNav, true) . "</pre>";
 	}
 
 	
 	
 	function createnavAction(){
-		//$aNav = $this->backend->getNavs();
-		$this->set('aNav', $aNav);
-
-		//$aPages = $this->backend->getPages();
-		$this->set('aPages', $aPages);
+		$navSelector = $this->backend->getNavSelector();
+		$this->set('navSelector', $navSelector);
 	}
 	
 	function addnavAction(){
 		$this->render = 0;
-		$this->backend->addNav($_REQUEST);
-		$this->redirect("admin", "navigation");
+		$oNav = $this->backend->addNav($_REQUEST);
+		$this->redirect("admin", "editnav/" . $oNav->getObjectID());
 	}
 
 
 	function editnavAction($id){
+		$oNav = $this->backend->getNav($id);
+		$this->set('oNav', $oNav);
+
+
 		
 		
 		$aBreadCrumbs = array();
@@ -74,8 +76,6 @@ class AdminController extends BaseController {
 
 		
 		
-		$oNav = $this->backend->getNav($id);
-		$this->set('oNav', $oNav);
 
 
 		$navSelector = $this->backend->getNavSelector($oNav->get("parent_id"));

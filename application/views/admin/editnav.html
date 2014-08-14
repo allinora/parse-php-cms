@@ -1,5 +1,6 @@
-<form action="/admin/addnav">
+<form action="/admin/savenav">
 	
+Editing nav: <{$fullname}>	
 <table class="table table-striped table-bordered table-condensed">
 	<thead>
 	</thead>
@@ -20,9 +21,12 @@
 			<th>Page</th>
 			<td>
 				<select name="page">
-					<{foreach from=$aPages item=page}>
-					<option value="">None</option>
-					<option value="<{$page->getObjectId()}>"><{$page->get("name")}></option>
+					<{foreach from=$smarty.session.pages item=page}>
+					<option value="<{$page->getObjectId()}>"
+						<{if $page->get('slug') == $oNav->get("page")}>
+						selected
+						<{/if}>
+					><{$page->get("slug")}></option>
 					<{/foreach}>
 					
 				</select>

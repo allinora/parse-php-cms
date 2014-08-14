@@ -12,7 +12,15 @@ class IndexController extends BaseController {
 	function indexAction() {
 		$aNav = $this->backend->getNavigationTree();
 		$this->set('aNav', $aNav);
-		//print "<pre>" . print_r($aNav, true) . "</pre>";
+		//print "<pre>" . print_r($aNav, true) . "</pre>";exit;
+		
+		$menu = $this->backend->getNavMenu();
+		$this->set('menu', $menu);
+	//	print $menu;exit;
+	
+    
+
+
 	}
 
 	function afterAction() {

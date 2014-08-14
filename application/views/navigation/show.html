@@ -1,0 +1,7 @@
+<{if $error}>
+<div class="alert alert-danger" role="alert"><{$error}></div>
+<{/if}>
+
+<{if $oPage|is_object}>
+	<{$oPage->get("data")}>
+<{/if}>

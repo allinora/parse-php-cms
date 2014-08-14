@@ -122,6 +122,9 @@ class Cms {
 		}
 		
 		$oNav->save();
+		
+		unset($_SESSION['navigation']);
+		unset($_SESSION['nav']);  // Make this more intelligent
 		return $oNav;
 	}
 	
@@ -147,6 +150,9 @@ class Cms {
 	
 	
 	function getNav($id){
+		if (!isset($_SESSION['nav'][$id])){
+			$this->getNavs();  // Refresh session
+		}
 		return $_SESSION['nav'][$id];
 	}
 	
@@ -204,6 +210,9 @@ class Cms {
 
 	function getBreadCrumbs($id, &$aBreadCrumbs){
 		$oNav = $this->getNav($id);
+		if (!is_object($oNav)){
+			return;
+		}
 		$aBreadCrumbs[] = $oNav->get("name");
 		if (!empty($oNav->get("parent_id"))){
 			$this->getBreadCrumbs($oNav->get("parent_id"), $aBreadCrumbs);
@@ -224,6 +233,74 @@ class Cms {
 		}
 	}
 	
+
+
+	function getNavMenu($selected_id = null){
+		$getNavMenu = $this->getHTMLList($this->getNavigationTree(), 'parent_id', array('selected_id' => $selected_id));
+		return $getNavMenu; 
+	}
+
+
+	function getHTMLList($aTree, $name = 'selectFiler', $aParams = array()){
+		/*
+		<ul class="nav navbar-nav">
+			<{foreach from=$aNav item=nav}>
+				<{if $nav.children|count}>
+		        <li class="dropdown">
+		          <a href="#" class="dropdown-toggle" data-toggle="dropdown"><{$nav.name}><span class="caret"></span></a>
+		          <ul class="dropdown-menu" role="menu">
+					<{foreach from=$nav.children item=kid}>
+		            	<li><a href="/pages/show/<{$kid.url}>"><{$kid.name}></a></li>
+					<{/foreach}>
+		          </ul>
+		        </li>
+				<{else}>
+		        <li class="activexx"><a href="/pages/show/<{$nav.url}>"><{$nav.name}></a></li>
+				<{/if}>
+			<{/foreach}>
+	    </ul>
+		*/
+		
+		
+		
+		$xstr = "";
+		$xstr .= "<ul id='$name' class='nav navbar-nav'>\n";
+		$xstr .= $this->getHTMLListElements($aTree, 0, $aParams);
+		$xstr .= "</ul>\n";
+		
+		return $xstr;
+
+
+	}
+	
+	function getHTMLListElements($aTree, $level = 0, $aParams = array()){
+		ini_set("display_errors", "On");
+		$str = "";
+		
+		
+		$tabs = str_repeat("\t", $level+1);
+		foreach($aTree as $folder){
+			
+			if (is_array($folder['children']) && count($folder['children']) > 0){
+				$str .= "$tabs<li class='dropdown'>\n";
+				$str .= "$tabs<a href='#' class='dropdown-toggle' data-toggle='dropdown'>{$folder['name']}<span class='caret'></span></a>\n";
+				$str .= "$tabs" . '<ul class="dropdown-menu" role="menu">' . "\n";
+				$str .= $this->getHTMLListElements($folder['children'], $level+1, $aParams)	;
+				$str .= "$tabs</ul></li>\n";
+			} else {
+				$str .= "$tabs\t<li id='d_{$folder['object_id']}'>{$folder['name']}\n";
+			}
+
+			//$str .= "</li>\n";
+			
+			
+		}
+		return $str;
+
+
+
+	}
+	
 	
 
 	function getNavSelector($selected_id = null){
@@ -237,6 +314,7 @@ class Cms {
 		$str = "";
 	
 		$str .= "<select id='$name' name='$name'>\n";
+		$str .= "<option>None</option>\n";
 		$str .= $this->getSelectOptions($aTree, 0, $aParams);
 
 		$str .= "</select>\n";

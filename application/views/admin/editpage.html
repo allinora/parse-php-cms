@@ -1,0 +1,8 @@
+Editing page: <{$oPage->get('slug')}>
+<form action="/admin/savePage">
+	<input type="hidden" name="id" value="<{$oPage->getObjectId()}>">	
+	<input type="text" name="name" value="<{$oPage->get('name')}>">	
+	<textarea class="jqte" name="data"  style="width: 100%"><{$oPage->get("data")}></textarea>
+	<input type="submit" value="save">
+</form>
+		
