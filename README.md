@@ -48,8 +48,6 @@ Pages have the following properties
 
 The goal is to use as much capabilities of Parse.com as the SDK can provide. This will help to both demonstrate the usage and to find bugs.
 
-This web application is for a photo album site where registered  users can create albums and add photos. Other users can see and comment on photos.
-
 The app should touch the following features.
 
 0. Signup  
